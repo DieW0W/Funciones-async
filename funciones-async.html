@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f71ce;
+            font-size: 50px;
+            font-weight: bold;
+            font-family: system-ui;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <img src="" id="imgen" height="200">
+    <p id="message"></p>
+    <script>
+        const $imgen = document.querySelector('#imgen')
+        const $message = document.querySelector('#message')
+        function renderPokemon(image) {
+            $imgen.setAttribute('src', image)
+        }
+        function renderMessage(message) {
+            $message.textContent = message
+        }
+
+        // fetch('https://pokeapi.co/api/v2/pokemon/251/')
+        //     .then(response => response.json())
+        //     .then(imgen => {
+        //         renderPokemon(imgen.sprites.front_default)
+        //     })
+        //     .catch(() => { renderMessage('Pokemon no encontrado :(') 
+        //     })
+
+        //Insertar funcion async que se ejecuta hasta que el proceso termine o el servidor responda
+        //Primer paso, declaracion de la funcion delcarandola con la palabra reservada asyn
+        async function buscarAPI() {
+            //la siguiente linea es equivalente a tener la constante response en la linea 38
+            const response = await fetch('https://pokeapi.co/api/v2/pokemon/250/')
+            //Impresion de la api como una promesa pendiente
+            //console.log(response.ok)
+            if (response.ok) {
+                /*una vez se tiene la promesa guardada hay que generar la constante response que ejecuta la funcion json
+                ya que aun se tiene una promesa pemndiente que cambiamos con la palabra resevada await que transforma la promesa
+                pendiente y trae las caracteristicas de nuestra api
+                */
+                const apis = await response.json()
+                console.log(apis)
+                /* una vez se tengan las caracteristicas de la api la podemos mandar a transformar y mostrarla
+                como en la funcion fetch
+                */
+                renderPokemon(apis.sprites.front_default)
+            } else {
+                renderMessage('Pokemon no Encontrado')
+            }
+
+        }
+
+        buscarAPI()
+
+
+        function compTenis(buyTenis, time = 2000) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    renderMessage(`${buyTenis} ✅`)
+                    resolve(`${buyTenis} ✅`)
+                }, time)
+            })
+        }
+
+        (async () => {
+            //Redefinicion del metodo orgininal
+            const Comprar = async () => {
+                const cart = []
+                const vans = await compTenis('Vans')
+                //cart.push(vans)
+                const nike = await compTenis('Nike')
+                //cart.push(nike)
+                const adidas = await compTenis('Adidas')
+                //cart.push(adidas)
+                const puma = await compTenis('Puma')
+                cart.push(vans, nike, adidas, puma)
+
+                return cart
+                //   .then(thing => { cart.push(thing); return buy('Vans') })
+                //   .then(thing => { cart.push(thing); return buy('Nike') })
+                //   .then(thing => { cart.push(thing); return buy('Puma') })
+                //   .then(thing => { cart.push(thing); return cart })
+            }
+            //se detiene la ejecucion del codigo ya hats a q no se termien no sontinua - "await"
+            const cart = await Comprar()
+            renderMessage(cart.toString())
+
+            // .then((cart) => {
+            //     renderMessage(cart.toString())
+            // })
+
+        })()
+
+        const all = async () => {
+            console.time()
+            //Ejecuta el codigo al mismo tiempo - primise
+            const cart = await Promise.all([
+                compTenis('vans', 1000),
+                compTenis('nike', 2000),
+                compTenis('adidas', 1000),
+                compTenis('puma', 1000),
+            ])
+            console.log(cart)
+            console.timeEnd()
+            renderMessage(cart.toString())
+
+            // .then((cart) => {
+            //   console.timeEnd()
+            //   renderMessage(cart.toString())
+            // })
+        }
+        all()
+
+
+
+
+    </script>
+
+</body>
+
+</html>
